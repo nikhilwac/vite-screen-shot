@@ -1,5 +1,6 @@
 import { app, shell, BrowserWindow, ipcMain, desktopCapturer } from 'electron'
 import path, { join } from 'path'
+import Logger from 'electron-log'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 const fs = require('fs')
@@ -82,7 +83,8 @@ async function captureScreen() {
 
     const pngPath = path.join(__dirname, `screenshot-${Date.now()}.png`)
     const avifPath = pngPath.replace('.png', '.avif')
-
+    Logger.info('avifPath:', avifPath)
+    Logger.info('pngPath:', pngPath)
     // Save screenshot as PNG
     fs.writeFileSync(pngPath, sources[0].thumbnail.toPNG())
 
