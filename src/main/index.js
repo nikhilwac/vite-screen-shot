@@ -3,6 +3,7 @@ import path, { join } from 'path'
 import Logger from 'electron-log'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+const os = require('os')
 const fs = require('fs')
 const sharp = require('sharp') // Import Sharp for image compression
 function createWindow() {
@@ -81,7 +82,13 @@ async function captureScreen() {
 
     if (sources.length === 0) return
 
-    const pngPath = path.join(__dirname, `screenshot-${Date.now()}.png`)
+    const documentsPath = path.join(os.homedir(), 'Documents', 'Screenshots')
+
+    // Ensure the directory exists
+    if (!fs.existsSync(documentsPath)) {
+      fs.mkdirSync(documentsPath, { recursive: true })
+    }
+    const pngPath = path.join(documentsPath, `screenshot-${Date.now()}.png`)
     const avifPath = pngPath.replace('.png', '.avif')
     Logger.info('avifPath:', avifPath)
     Logger.info('pngPath:', pngPath)
@@ -94,6 +101,7 @@ async function captureScreen() {
       .toFile(avifPath)
 
     console.log('Saved:', avifPath)
+    Logger.info('pngPath:', pngPath)
 
     // Delete the temporary PNG file
     fs.unlinkSync(pngPath)
